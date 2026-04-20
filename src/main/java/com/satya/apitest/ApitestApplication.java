@@ -23,19 +23,18 @@ public class ApitestApplication {
     @Bean
     public CommandLineRunner run(RestTemplate restTemplate) {
         return args -> {
-            // FIXED URL 1: Generate Webhook
             String url = "https://healthrx.co.in";
             
             Map<String, String> request = Map.of(
-                "name", "John Doe", 
-                "regNo", "REG12347", 
-                "email", "john@example.com" 
+                "name", "Satya", 
+                "regNo", "ADT23SOCB1558",
+                "email", "satya@gmail.com" 
             );
 
             try {
                 Map<String, Object> response = restTemplate.postForObject(url, request, Map.class);
                 String token = (String) response.get("accessToken");
-                System.out.println("COPIED TOKEN: " + token);
+                System.out.println("Got Token: " + token);
 
                 String sqlQuery = "SELECT e1.EMP_ID, e1.FIRST_NAME, e1.LAST_NAME, d.DEPARTMENT_NAME, " +
                                   "(SELECT COUNT(*) FROM EMPLOYEE e2 WHERE e2.DEPARTMENT = e1.DEPARTMENT " +
@@ -45,7 +44,7 @@ public class ApitestApplication {
 
                 submitSolution(restTemplate, token, sqlQuery);
             } catch (Exception e) {
-                System.err.println("Error occurred: " + e.getMessage());
+                e.printStackTrace();
             }
         };
     }
@@ -61,6 +60,6 @@ public class ApitestApplication {
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(body, headers);
 
         String result = restTemplate.postForObject(submitUrl, entity, String.class);
-        System.out.println("Final Result: " + result);
+        System.out.println("Result: " + result);
     }
 }
